@@ -5,19 +5,32 @@ import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
-  Engage.init('publick-key');
   WidgetsFlutterBinding.ensureInitialized();
+  await Engage.init('56d194ceb0a8795a18d5396edd8b566a');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
   FirebaseMessaging.instance
     .getToken()
     .then((String? token) {
-      // print(token);
+      print(token);
       if (token != null) {
-        Engage.setDeviceToken('u133456', token);
+        Engage.setDeviceToken('640eda15c5c91a28839fc5fe', token);
       }
     });
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
+  });
+  // Engage.identify('engagedemo27042022', {
+  //   'first_name': 'Opeyemi new demo',
+  //   'location': 'Lagos',
+  //   'created_at': '2020-02-02'
+  // });
   runApp(const MyApp());
 }
 
@@ -50,11 +63,6 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   void _incrementCounter() {
-    Engage.trackEvents('u133456', 'Transfer', {
-      'to': 'u6789',
-      'amount': 345.50,
-      'deliver_on': DateTime.now()
-    });
     setState(() {
       _counter++;
     });
