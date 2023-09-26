@@ -1,8 +1,13 @@
+import 'dart:io';
 import 'package:engage/engage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("Handling a background message: ${message.messageId}");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +21,13 @@ void main() async {
       print(token);
       if (token != null) {
         Engage.setDeviceToken('640eda15c5c91a28839fc5fe', token);
+        var duration = const Duration(seconds: 5);
+        sleep(duration);
+        Engage.logout();
+        // Engage.logout('640eda15c5c91a28839fc5fe', token);
       }
     });
+  // Foreground - notification is not visible
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     print('Got a message whilst in the foreground!');
     print('Message data: ${message.data}');
@@ -26,6 +36,8 @@ void main() async {
       print('Message also contained a notification: ${message.notification}');
     }
   });
+  // Handle in background
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // Engage.identify('engagedemo27042022', {
   //   'first_name': 'Opeyemi new demo',
   //   'location': 'Lagos',
@@ -83,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
