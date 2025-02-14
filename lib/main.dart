@@ -11,19 +11,24 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Engage.init('56d194ceb0a8795a18d5396edd8b566a');
+  await Engage.init('pk_d25f4a0af2b78ba02608ee05949530e7');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform
   );
+  print('Here');
+  Engage.identify('engagedemo27042022', {
+    'first_name': 'Opeyemi new demo',
+    'location': 'Lagos',
+    'created_at': '2020-02-02'
+  });
   FirebaseMessaging.instance
     .getToken()
     .then((String? token) {
-      print(token);
       if (token != null) {
         Engage.setDeviceToken('640eda15c5c91a28839fc5fe', token);
-        var duration = const Duration(seconds: 5);
-        sleep(duration);
-        Engage.logout();
+        // var duration = const Duration(seconds: 5);
+        // sleep(duration);
+        // Engage.logout();
         // Engage.logout('640eda15c5c91a28839fc5fe', token);
       }
     });
@@ -38,11 +43,6 @@ void main() async {
   });
   // Handle in background
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // Engage.identify('engagedemo27042022', {
-  //   'first_name': 'Opeyemi new demo',
-  //   'location': 'Lagos',
-  //   'created_at': '2020-02-02'
-  // });
   runApp(const MyApp());
 }
 
